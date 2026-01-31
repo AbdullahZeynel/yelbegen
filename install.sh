@@ -3,6 +3,7 @@
 # Usage: curl -sL https://gazisiber.org/yelbegen | bash
 
 set -e
+set -o pipefail
 
 REPO_URL="https://github.com/gazisiber/yelbegen.git"
 INSTALL_DIR="$HOME/.yelbegen"
@@ -86,7 +87,7 @@ echo -e "${BLUE}[+] Installing Yelbegen...${NC}"
 if [ $USE_PIPX -eq 1 ]; then
     # Uninstall if previously installed via pipx to ensure clean state
     pipx uninstall "$BIN_NAME" &>/dev/null || true
-    pipx install . --force | sed 's/[✨🌟⚠️]//g'
+    pipx install . --force 2>&1 | tr -cd '\11\12\15\40-\176'
 else
     # Pip user install
     # Check for break-system-packages support (PEP 668)
