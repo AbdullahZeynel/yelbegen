@@ -26,6 +26,17 @@ echo -e "${NC}"
 echo -e "${BLUE}=== Yelbegen Installer ===${NC}"
 echo
 
+# 0. Check for Root
+if [ "$EUID" -eq 0 ]; then
+  echo -e "${RED}[!] Do NOT run this script as root (sudo).${NC}"
+  echo "    The script needs to install to YOUR user directory."
+  echo "    It will ask for sudo password when needed (for man pages)."
+  echo
+  echo "    Please run:"
+  echo -e "    ${YELLOW}curl -sL https://gazisiber.org/yelbegen | bash${NC}"
+  exit 1
+fi
+
 # 1. Check Dependencies
 echo -e "${BLUE}[+] Checking dependencies...${NC}"
 MISSING_DEPS=0
@@ -75,7 +86,7 @@ echo -e "${BLUE}[+] Installing Yelbegen...${NC}"
 if [ $USE_PIPX -eq 1 ]; then
     # Uninstall if previously installed via pipx to ensure clean state
     pipx uninstall "$BIN_NAME" &>/dev/null || true
-    pipx install . --force
+    pipx install . --force | sed 's/[✨🌟⚠️]//g'
 else
     # Pip user install
     # Check for break-system-packages support (PEP 668)
